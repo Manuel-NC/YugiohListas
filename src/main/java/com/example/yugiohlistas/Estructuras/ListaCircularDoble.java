@@ -289,4 +289,23 @@ public class ListaCircularDoble<T> {
         }
     }
 
+    public NodoDoble<T> getInicio() {
+        return inicio;
+    }
+
+    public boolean estaVacia() {
+        return inicio == null;
+    }
+
+    public int getTamano() {
+        if (inicio == null) return 0;
+        int contador = 1;
+        NodoDoble<T> r = inicio;
+        while (r != fin) {
+            contador++;
+            r = r.getSig();
+        }
+        return contador;
+    }
+
 }
