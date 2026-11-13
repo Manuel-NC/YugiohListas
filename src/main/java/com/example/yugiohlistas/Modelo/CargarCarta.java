@@ -8,21 +8,28 @@ import java.nio.charset.StandardCharsets;
 
 public class CargarCarta {
 
-    public ListaCircularDoble<CartaYugioh> cargarTodasLasCartas(String rutaRecurso) {
+    private static final String RUTA_CSV = "/com/example/yugiohlistas/cartasYugioh.csv";
+
+    public ListaCircularDoble<CartaYugioh> cargarTodasLasCartas() {
         ListaCircularDoble<CartaYugioh> listaCartas = new ListaCircularDoble<>();
 
-        try (InputStream is = getClass().getResourceAsStream(rutaRecurso);
-             BufferedReader br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
+        try (InputStream is = getClass().getResourceAsStream(RUTA_CSV)) {
+            if (is == null) {
+                System.err.println("No se encontró el recurso: " + RUTA_CSV);
+                return listaCartas;
+            }
 
-            String linea = br.readLine(); // Omite la fila de encabezados
-            while ((linea = br.readLine()) != null) {
-                CartaYugioh carta = parsearLineaCSV(linea);
-                if (carta != null) {
-                    listaCartas.insertaFin(carta);
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
+                String linea = br.readLine(); // Saltar encabezado
+                while ((linea = br.readLine()) != null) {
+                    CartaYugioh carta = parsearLineaCSV(linea);
+                    if (carta != null) {
+                        listaCartas.insertaFin(carta);
+                    }
                 }
             }
         } catch (Exception e) {
-            System.err.println("Error al cargar cartas desde el CSV: " + e.getMessage());
+            System.err.println("Error al leer cartasYugioh.csv: " + e.getMessage());
         }
 
         return listaCartas;

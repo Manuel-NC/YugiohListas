@@ -11,21 +11,21 @@ public class FiltroAtaque {
         ListaCircularDoble<CartaYugioh> resultado = new ListaCircularDoble<>();
         if (listaBase == null || listaBase.estaVacia()) return resultado;
 
-        ArrayList<CartaYugioh> monstruos = new ArrayList<>();
+        ArrayList<CartaYugioh> cartas = new ArrayList<>();
         NodoDoble<CartaYugioh> actual = listaBase.getInicio();
         int total = listaBase.getTamano();
 
         for (int i = 0; i < total; i++) {
-            if (actual.getDato().esMonstruo()) {
-                monstruos.add(actual.getDato());
-            }
+            //if (actual.getDato().esMonstruo()) {
+                cartas.add(actual.getDato());
+            //}
             actual = actual.getSig();
         }
 
         Comparator<CartaYugioh> comp = Comparator.comparingInt(CartaYugioh::getAtk);
-        monstruos.sort(lowToHigh ? comp : comp.reversed());
+        cartas.sort(lowToHigh ? comp : comp.reversed());
 
-        for (CartaYugioh c : monstruos) {
+        for (CartaYugioh c : cartas) {
             resultado.insertaFin(c);
         }
         return resultado;
