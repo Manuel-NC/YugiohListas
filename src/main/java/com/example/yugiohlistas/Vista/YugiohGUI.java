@@ -46,7 +46,7 @@ public class YugiohGUI {
         root.setCenter(crearPanelCentral());
 
         Scene scene = new Scene(root, 1140, 720);
-        stage.setTitle("Yu-Gi-Oh! 25th Anniversary Tin: Dueling Heroes Mega Pack");
+        stage.setTitle("Yu-Gi-Oh Card Info");
         stage.setScene(scene);
         stage.show();
     }
@@ -63,9 +63,9 @@ public class YugiohGUI {
 
         grupoFiltros = new ToggleGroup();
 
-        btnTodas = crearBotonFiltro("Todas");
-        btnNivel = crearBotonFiltro("Nivel");
-        btnAtributo = crearBotonFiltro("Atributo");
+        btnTodas = crearBotonFiltro("All");
+        btnNivel = crearBotonFiltro("Level");
+        btnAtributo = crearBotonFiltro("Attribute");
         btnAtk = crearBotonFiltro("ATK");
         btnDef = crearBotonFiltro("DEF");
 
