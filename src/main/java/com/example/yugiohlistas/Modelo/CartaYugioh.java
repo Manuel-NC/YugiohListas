@@ -1,5 +1,9 @@
 package com.example.yugiohlistas.Modelo;
 
+/**
+ * Modelo que representa una carta de Yu-Gi-Oh! con todos sus atributos,
+ * estadísticas de combate y enlace a su imagen.
+ */
 public class CartaYugioh {
     private String nombre;
     private String tipo;
@@ -11,6 +15,7 @@ public class CartaYugioh {
     private String descripcion;
     private String urlImagen;
 
+    //Construye un objeto CartaYugioh inicializando todos sus campos.
     public CartaYugioh(String nombre, String tipo, String atributo, int nivel,
                        String raza, int atk, int def, String descripcion, String urlImagen) {
         this.nombre = nombre;
