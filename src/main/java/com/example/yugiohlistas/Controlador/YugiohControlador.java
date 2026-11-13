@@ -5,6 +5,10 @@ import com.example.yugiohlistas.Estructuras.NodoDoble;
 import com.example.yugiohlistas.Modelo.*;
 import com.example.yugiohlistas.Vista.YugiohGUI;
 
+/**
+ * Controlador principal encargado de conectar la interfaz gráfica (YugiohGUI)
+ * con el modelo de datos, los filtros, la lista circular doble y el audio.
+ */
 public class YugiohControlador {
     private final ListaCircularDoble<CartaYugioh> listaPrincipal;
     private ListaCircularDoble<CartaYugioh> listaActiva;
@@ -18,6 +22,12 @@ public class YugiohControlador {
     private final ReproductorAudio audio;
     private final YugiohGUI vista;
 
+    /**
+     * Inicializa el controlador instanciando los filtros, cargando todas las
+     * cartas desde el CSV hacia la lista maestra e iniciando la música de fondo.
+     *
+     * @param vista Instancia de la interfaz gráfica principal (YugiohGUI).
+     */
     public YugiohControlador(YugiohGUI vista) {
         this.vista = vista;
         this.filtroNivel = new FiltroNivel();
@@ -30,12 +40,20 @@ public class YugiohControlador {
         this.audio = new ReproductorAudio("/com/example/yugiohlistas/Yugioh-GodsAnger.mp3");
     }
 
+    /**
+     * Registra los eventos de la interfaz, activa por defecto el filtro "All"
+     * y carga las primeras cartas en el carrusel al arrancar la aplicación.
+     */
     public void iniciar() {
         registrarEventos();
         vista.getBtnTodas().setSelected(true);
         aplicarFiltro();
     }
 
+    /**
+     * Asocia los detectores de eventos (listeners) a las cartas laterales,
+     * los botones de filtro, los selectores desplegables y el botón de silencio.
+     */
     private void registrarEventos() {
         // Clic directamente sobre la carta anterior o siguiente para girar el carrusel
         vista.getVistaAnterior().setOnMouseClicked(e -> anteriorCarta());
@@ -62,6 +80,11 @@ public class YugiohControlador {
         });
     }
 
+    /**
+     * Evalúa qué botón de filtro está activo, genera la lista circular doble
+     * correspondiente en listaActiva, reinicia el puntero al inicio
+     * y actualiza la vista.
+     */
     private void aplicarFiltro() {
         if (vista.getBtnTodas().isSelected()) {
             listaActiva = listaPrincipal;
@@ -80,6 +103,10 @@ public class YugiohControlador {
         refrescarVista();
     }
 
+    /**
+     * Avanza al siguiente nodo de la lista circular doble, incrementa de forma
+     * cíclica el contador de posición y actualiza el carrusel.
+     */
     private void siguienteCarta() {
         if (nodoActual == null || listaActiva.estaVacia()) return;
         nodoActual = nodoActual.getSig();
@@ -87,6 +114,10 @@ public class YugiohControlador {
         refrescarVista();
     }
 
+    /**
+     * Retrocede al nodo anterior de la lista circular doble, decrementa de forma
+     * cíclica el contador de posición (saltando al total si estaba en 1) y actualiza el carrusel.
+     */
     private void anteriorCarta() {
         if (nodoActual == null || listaActiva.estaVacia()) return;
         nodoActual = nodoActual.getAnt();
@@ -94,6 +125,10 @@ public class YugiohControlador {
         refrescarVista();
     }
 
+    /**
+     * Envía a la vista la carta actual junto con sus vecinas inmediata anterior
+     * y siguiente, además de la posición actual y el total de elementos.
+     */
     private void refrescarVista() {
         if (nodoActual == null || listaActiva.estaVacia()) {
             vista.actualizarCarrusel(null, null, null, 0, 0);

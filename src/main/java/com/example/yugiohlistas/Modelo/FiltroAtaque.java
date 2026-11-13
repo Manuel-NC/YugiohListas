@@ -5,8 +5,20 @@ import com.example.yugiohlistas.Estructuras.NodoDoble;
 import java.util.ArrayList;
 import java.util.Comparator;
 
+/**
+ * Clase encargada de extraer las cartas de la lista principal y ordenarlas
+ * según sus puntos de ataque (ATK), ya sea de menor a mayor o viceversa.
+ */
 public class FiltroAtaque {
 
+    /**
+     * Recorre la lista base, copia sus cartas a una lista auxiliar para ordenarlas
+     * por valor de ataque (ATK) y las devuelve en una nueva ListaCircularDoble.
+     *
+     * @param listaBase Lista circular doble original con todas las cartas cargadas.
+     * @param lowToHigh true para ordenar de menor a mayor ataque; false para mayor a menor.
+     * @return Nueva ListaCircularDoble con las cartas ya ordenadas por ATK.
+     */
     public ListaCircularDoble<CartaYugioh> filtrarYOrdenar(ListaCircularDoble<CartaYugioh> listaBase, boolean lowToHigh) {
         ListaCircularDoble<CartaYugioh> resultado = new ListaCircularDoble<>();
         if (listaBase == null || listaBase.estaVacia()) return resultado;

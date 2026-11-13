@@ -11,6 +11,10 @@ import javafx.stage.Stage;
 
 import java.net.URL;
 
+/**
+ * Vista principal de la aplicación encargada de construir y gestionar
+ * la ventana, la barra superior de filtros, el fondo y el carrusel central.
+ */
 public class YugiohGUI {
 
     private ToggleGroup grupoFiltros;
@@ -24,6 +28,13 @@ public class YugiohGUI {
     private CartaView vistaActual;
     private CartaView vistaSiguiente;
 
+    /**
+     * Arma la estructura completa de la ventana principal (BorderPane), configura
+     * la imagen de fondo, enlaza el reescalado dinámico al cambiar el alto de la
+     * ventana y muestra la escena en el escenario de JavaFX.
+     *
+     * @param stage Escenario principal proporcionado por JavaFX.
+     */
     public void construirInterfaz(Stage stage) {
         BorderPane root = new BorderPane();
 
@@ -43,14 +54,30 @@ public class YugiohGUI {
         }
 
         root.setTop(crearBarraSuperior());
-        root.setCenter(crearPanelCentral());
+        HBox panelCentral = crearPanelCentral();
+        root.setCenter(panelCentral);
 
-        Scene scene = new Scene(root, 1140, 720);
+        Scene scene = new Scene(root, 1280, 760);
+
+        scene.heightProperty().addListener((obs, viejoAlto, nuevoAlto) -> {
+            double h = nuevoAlto.doubleValue();
+            vistaAnterior.ajustarEscala(h);
+            vistaActual.ajustarEscala(h);
+            vistaSiguiente.ajustarEscala(h);
+            panelCentral.setSpacing(Math.max(28, h * 0.045));
+        });
+
         stage.setTitle("Yu-Gi-Oh Card Info");
         stage.setScene(scene);
         stage.show();
     }
 
+    /**
+     * Construye la barra de navegación superior con los botones de filtro excluyentes,
+     * los subcontroles desplegables (nivel, atributo y ordenamiento) y el botón de silencio.
+     *
+     * @return Contenedor HBox configurado para la parte superior de la ventana.
+     */
     private HBox crearBarraSuperior() {
         HBox barra = new HBox(10);
         barra.setPadding(new Insets(14, 22, 14, 22));
@@ -101,6 +128,12 @@ public class YugiohGUI {
         return barra;
     }
 
+    /**
+     * Crea el contenedor central del carrusel e instancia las tres vistas de carta:
+     * la miniatura anterior, la carta principal del centro y la miniatura siguiente.
+     *
+     * @return Contenedor HBox centrado con las tres vistas del carrusel.
+     */
     private HBox crearPanelCentral() {
         HBox centro = new HBox(32);
         centro.setAlignment(Pos.CENTER);
@@ -114,6 +147,13 @@ public class YugiohGUI {
         return centro;
     }
 
+    /**
+     * Crea un botón de filtro estilizado, lo agrupa en el ToggleGroup para que sea
+     * excluyente y cambia su color automáticamente al activarse o desactivarse.
+     *
+     * @param texto Etiqueta visible del botón.
+     * @return ToggleButton configurado y con listener de estilo.
+     */
     private ToggleButton crearBotonFiltro(String texto) {
         ToggleButton btn = new ToggleButton(texto);
         btn.setToggleGroup(grupoFiltros);
@@ -121,27 +161,53 @@ public class YugiohGUI {
         String estiloActivo = "-fx-background-color: #3b82f6; -fx-text-fill: #ffffff; -fx-font-weight: bold; -fx-padding: 7 15; -fx-background-radius: 6; -fx-cursor: hand;";
 
         btn.setStyle(estiloInactivo);
-        btn.selectedProperty().addListener((obs, was, isNow) -> btn.setStyle(isNow ? estiloActivo : estiloInactivo));
+        btn.selectedProperty().addListener((obs, era, es) -> btn.setStyle(es ? estiloActivo : estiloInactivo));
         return btn;
     }
 
+    /**
+     * Muestra u oculta los subcontroles específicos (selector de nivel, selector de
+     * atributo o casilla de ordenamiento) según el botón de filtro activo.
+     */
     public void actualizarSubcontroles() {
         configurarVisibilidad(comboNivel, btnNivel.isSelected());
         configurarVisibilidad(comboAtributo, btnAtributo.isSelected());
         configurarVisibilidad(chkLowToHigh, btnAtk.isSelected() || btnDef.isSelected());
     }
 
+    /**
+     * Controla tanto la visibilidad visual como el espacio ocupado en el diseño
+     * (managed) de un control para que la barra superior se reacomode sin huecos.
+     *
+     * @param c       Control de JavaFX a mostrar u ocultar.
+     * @param visible true para hacerlo visible y reservar su espacio; false para ocultarlo por completo.
+     */
     private void configurarVisibilidad(Control c, boolean visible) {
         c.setVisible(visible);
         c.setManaged(visible);
     }
 
+    /**
+     * Actualiza simultáneamente las tres cartas visibles en el carrusel junto con
+     * el indicador numérico de posición en la tarjeta central.
+     *
+     * @param actual    Carta seleccionada actualmente en el centro.
+     * @param anterior  Carta previa en la lista circular (miniatura izquierda).
+     * @param siguiente Carta posterior en la lista circular (miniatura derecha).
+     * @param pos       Posición actual dentro de la lista activa (base 1).
+     * @param total     Total de cartas disponibles en la lista activa.
+     */
     public void actualizarCarrusel(CartaYugioh actual, CartaYugioh anterior, CartaYugioh siguiente, int pos, int total) {
         vistaActual.mostrarCarta(actual, pos, total);
         vistaAnterior.mostrarCarta(anterior, 0, 0);
         vistaSiguiente.mostrarCarta(siguiente, 0, 0);
     }
 
+    /**
+     * Cambia el ícono del botón de audio según el estado actual de silencio.
+     *
+     * @param muteado true para mostrar el ícono silenciado; false para mostrar sonido activo.
+     */
     public void actualizarIconoMute(boolean muteado) {
         btnMute.setText(muteado ? "🔇" : "🔊");
     }
